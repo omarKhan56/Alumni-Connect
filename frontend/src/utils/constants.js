@@ -15,16 +15,8 @@ export const BATCHES = Array.from({ length: 20 }, (_, i) =>
 
 export const JOB_TYPES = ['full-time', 'internship', 'part-time', 'contract']
 
-export const DONATION_CAUSES = [
-  'General Fund',
-  'Scholarship Fund',
-  'Infrastructure',
-  'Research Grant',
-  'Sports Facilities',
-  'Library',
-]
 
-export const DONATION_AMOUNTS = [500, 1000, 2500, 5000, 10000]
+
 
 export const MENTORSHIP_STATUS = {
   pending:   { label: 'Pending',   color: 'yellow' },
@@ -43,6 +35,5 @@ export const NAV_ITEMS = [
   { to: '/events',      label: 'Events'            },
   { to: '/messages',    label: 'Messages'          },
   { to: '/mentorship',  label: 'Mentorship'        },
-  { to: '/donations',   label: 'Donations'         },
   { to: '/profile',     label: 'My Profile'        },
 ]

@@ -23,7 +23,6 @@ import JobsPage from './pages/JobsPage'
 import EventsPage from './pages/EventsPage'
 import MessagesPage from './pages/MessagesPage'
 import MentorshipPage from './pages/MentorshipPage'
-import DonationsPage from './pages/DonationsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminPage from './pages/AdminPage'
 import NotFoundPage from './pages/NotFoundPage'
@@ -40,11 +39,11 @@ export default function App() {
   const dispatch = useDispatch()
   const { token, initialized } = useSelector((s) => s.auth)
 
-useEffect(() => {
-  if (token) {
-    dispatch(loadUser())
-  }
-}, [dispatch, token])
+  useEffect(() => {
+    if (token) {
+      dispatch(loadUser())
+    }
+  }, [dispatch, token])
 
   if (token && !initialized)
     return (
@@ -77,7 +76,6 @@ useEffect(() => {
         <Route path="messages" element={<MessagesPage />} />
         <Route path="messages/:userId" element={<MessagesPage />} />
         <Route path="mentorship" element={<MentorshipPage />} />
-        <Route path="donations" element={<DonationsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminPage /></ProtectedRoute>} />
       </Route>

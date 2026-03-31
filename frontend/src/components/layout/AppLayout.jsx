@@ -4,8 +4,8 @@ import { logout } from '../../store/slices/authSlice'
 import { toggleSidebar } from '../../store/slices/uiSlice'
 import {
   LayoutDashboard, Newspaper, Users, Briefcase, CalendarDays,
-  MessageCircle, GraduationCap, Heart, User, ShieldCheck,
-  LogOut, Menu, X, Bell, ChevronRight
+  MessageCircle, GraduationCap, User, ShieldCheck,
+  LogOut, Menu, Bell
 } from 'lucide-react'
 
 const navItems = [
@@ -16,7 +16,6 @@ const navItems = [
   { to: '/events', icon: CalendarDays, label: 'Events' },
   { to: '/messages', icon: MessageCircle, label: 'Messages' },
   { to: '/mentorship', icon: GraduationCap, label: 'Mentorship' },
-  { to: '/donations', icon: Heart, label: 'Donations' },
   { to: '/profile', icon: User, label: 'My Profile' },
 ]
 
@@ -32,113 +31,134 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-[#020617] text-slate-200 overflow-hidden">
+      
       {/* Sidebar */}
       <aside
-        className={`${sidebarOpen ? 'w-64' : 'w-0 -translate-x-full'} lg:translate-x-0 ${sidebarOpen ? 'lg:w-64' : 'lg:w-20'} flex-shrink-0 bg-white border-r border-slate-100 flex flex-col transition-all duration-300 z-40 fixed lg:relative h-full overflow-hidden`}
+        className={`${sidebarOpen ? 'w-64' : 'w-0 -translate-x-full'} lg:translate-x-0 ${sidebarOpen ? 'lg:w-64' : 'lg:w-20'} flex-shrink-0 
+        bg-white/5 backdrop-blur-xl border-r border-white/10 flex flex-col 
+        transition-all duration-300 z-40 fixed lg:relative h-full overflow-hidden`}
       >
         {/* Logo */}
-        <div className="px-5 py-5 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center flex-shrink-0">
+        <div className="px-5 py-5 border-b border-white/10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
             <GraduationCap size={18} className="text-white" />
           </div>
           {sidebarOpen && (
-            <span className="font-display font-bold text-brand-900 text-lg tracking-tight whitespace-nowrap">
-              Alumni<span className="text-brand-500">Connect</span>
+            <span className="font-bold text-lg tracking-tight">
+              Alumni<span className="text-purple-400">Connect</span>
             </span>
           )}
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-2">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `sidebar-link ${isActive ? 'active' : ''} ${!sidebarOpen ? 'justify-center' : ''}`
+                `flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200
+                ${isActive 
+                  ? 'bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white shadow-inner' 
+                  : 'hover:bg-white/10 text-slate-400 hover:text-white'}
+                ${!sidebarOpen ? 'justify-center' : ''}`
               }
             >
-              <Icon size={18} className="flex-shrink-0" />
-              {sidebarOpen && <span className="whitespace-nowrap">{label}</span>}
+              <Icon size={18} />
+              {sidebarOpen && <span>{label}</span>}
             </NavLink>
           ))}
+
           {user?.role === 'admin' && (
             <NavLink
               to="/admin"
-              className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''} ${!sidebarOpen ? 'justify-center' : ''}`}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200
+                ${isActive 
+                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-white' 
+                  : 'hover:bg-white/10 text-slate-400 hover:text-white'}
+                ${!sidebarOpen ? 'justify-center' : ''}`
+              }
             >
-              <ShieldCheck size={18} className="flex-shrink-0" />
+              <ShieldCheck size={18} />
               {sidebarOpen && <span>Admin Panel</span>}
             </NavLink>
           )}
         </nav>
 
-        {/* User mini profile */}
-        <div className="px-3 py-4 border-t border-slate-100">
-          <div className={`flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 cursor-pointer ${!sidebarOpen ? 'justify-center' : ''}`}>
+        {/* User */}
+        <div className="px-3 py-4 border-t border-white/10">
+          <div className={`flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/10 transition ${!sidebarOpen ? 'justify-center' : ''}`}>
             <img
               src={user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=6366f1&color=fff`}
               alt={user?.name}
-              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              className="w-9 h-9 rounded-full border border-white/20"
             />
             {sidebarOpen && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-800 truncate">{user?.name}</p>
+              <div>
+                <p className="text-sm font-semibold">{user?.name}</p>
                 <p className="text-xs text-slate-400 capitalize">{user?.role}</p>
               </div>
             )}
           </div>
+
           <button
             onClick={handleLogout}
-            className={`w-full mt-1 flex items-center gap-3 px-3 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-all text-sm font-medium ${!sidebarOpen ? 'justify-center' : ''}`}
+            className={`w-full mt-2 flex items-center gap-3 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition ${!sidebarOpen ? 'justify-center' : ''}`}
           >
             <LogOut size={16} />
-            {sidebarOpen && 'Sign out'}
+            {sidebarOpen && 'Logout'}
           </button>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
+      {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => dispatch(toggleSidebar())}
         />
       )}
 
       {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        
         {/* Topbar */}
-        <header className="bg-white border-b border-slate-100 px-4 lg:px-6 h-16 flex items-center justify-between flex-shrink-0 z-20">
+        <header className="bg-white/5 backdrop-blur-xl border-b border-white/10 px-4 lg:px-6 h-16 flex items-center justify-between">
+          
           <button
             onClick={() => dispatch(toggleSidebar())}
-            className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-600"
+            className="p-2 rounded-lg hover:bg-white/10 transition"
           >
             <Menu size={20} />
           </button>
 
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-lg hover:bg-slate-100 relative">
-              <Bell size={18} className="text-slate-600" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full" />
+          <div className="flex items-center gap-4">
+            
+            {/* Notification */}
+            <button className="p-2 rounded-lg hover:bg-white/10 relative transition">
+              <Bell size={18} />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
             </button>
-            <div className="flex items-center gap-2 pl-3 border-l border-slate-100">
+
+            {/* Profile */}
+            <div className="flex items-center gap-3">
               <img
                 src={user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=6366f1&color=fff`}
                 alt={user?.name}
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-9 h-9 rounded-full border border-white/20"
               />
               <div className="hidden sm:block">
-                <p className="text-sm font-semibold text-slate-800">{user?.name}</p>
+                <p className="text-sm font-semibold">{user?.name}</p>
                 <p className="text-xs text-slate-400 capitalize">{user?.role}</p>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        {/* Content */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#020617]">
           <Outlet />
         </main>
       </div>

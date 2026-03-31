@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { Users, Briefcase, CalendarDays, GraduationCap, Heart, ShieldCheck, Trash2, Edit2, ChevronDown } from 'lucide-react'
+import { Users, Briefcase, CalendarDays, GraduationCap, ShieldCheck, Trash2 } from 'lucide-react'
 
 const ROLES = ['student', 'alumni', 'admin']
 const PIE_COLORS = ['#6366f1', '#fb923c', '#22c55e']
@@ -86,18 +86,19 @@ export default function AdminPage() {
       {tab === 'overview' && (
         <div className="space-y-5">
           {/* Stat cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { label: 'Total Users', value: analytics?.totalUsers, icon: Users, color: 'brand' },
               { label: 'Alumni', value: analytics?.totalAlumni, icon: GraduationCap, color: 'purple' },
               { label: 'Pending Mentorships', value: analytics?.pendingMentorships, icon: GraduationCap, color: 'yellow' },
-              { label: 'Total Donations', value: `₹${(analytics?.totalDonationsAmount || 0).toLocaleString()}`, icon: Heart, color: 'pink' },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="card">
                 <div className={`w-10 h-10 rounded-xl mb-3 flex items-center justify-center ${
-                  color === 'brand' ? 'bg-brand-100' : color === 'purple' ? 'bg-purple-100' : color === 'yellow' ? 'bg-yellow-100' : 'bg-pink-100'
+                  color === 'brand' ? 'bg-brand-100' : color === 'purple' ? 'bg-purple-100' : 'bg-yellow-100'
                 }`}>
-                  <Icon size={18} className={`${color === 'brand' ? 'text-brand-600' : color === 'purple' ? 'text-purple-600' : color === 'yellow' ? 'text-yellow-600' : 'text-pink-600'}`} />
+                  <Icon size={18} className={`${
+                    color === 'brand' ? 'text-brand-600' : color === 'purple' ? 'text-purple-600' : 'text-yellow-600'
+                  }`} />
                 </div>
                 <p className="text-2xl font-bold text-slate-800">{value ?? '—'}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{label}</p>
@@ -151,7 +152,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Users management */}
+      {/* Users tab */}
       {tab === 'users' && (
         <div className="space-y-4">
           <div className="flex items-center gap-3">
@@ -165,36 +166,13 @@ export default function AdminPage() {
           <div className="card p-0 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-100">
-                  <tr>
-                    {['User', 'Email', 'Dept', 'Batch', 'Role', 'Actions'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
                 <tbody className="divide-y divide-slate-50">
                   {filteredUsers.map(u => (
-                    <tr key={u._id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={u._id}>
+                      <td className="px-4 py-3">{u.name}</td>
+                      <td className="px-4 py-3">{u.email}</td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <img src={u.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=e0e7ff&color=4f46e5&size=28`} alt="" className="w-7 h-7 rounded-full object-cover" />
-                          <span className="font-medium text-slate-800 whitespace-nowrap">{u.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
-                      <td className="px-4 py-3 text-slate-500 text-xs">{u.dept || '—'}</td>
-                      <td className="px-4 py-3 text-slate-500 text-xs">{u.batch || '—'}</td>
-                      <td className="px-4 py-3">
-                        <select
-                          value={u.role}
-                          onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                          className={`text-xs px-2 py-1 rounded-lg border-0 font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-brand-400 ${u.role === 'admin' ? 'bg-red-100 text-red-700' : u.role === 'alumni' ? 'bg-brand-100 text-brand-700' : 'bg-slate-100 text-slate-600'}`}
-                        >
-                          {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
-                        </select>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => handleDelete(u._id, u.name)} className="p-1.5 hover:bg-red-50 rounded-lg text-slate-300 hover:text-red-500 transition-colors">
+                        <button onClick={() => handleDelete(u._id, u.name)}>
                           <Trash2 size={14} />
                         </button>
                       </td>
@@ -204,12 +182,6 @@ export default function AdminPage() {
               </table>
             </div>
           </div>
-        </div>
-      )}
-
-      {tab === 'activity' && (
-        <div className="card text-center py-12">
-          <p className="text-slate-400">Activity logs coming soon.</p>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import api from '../utils/api'
-import { Users, Briefcase, CalendarDays, GraduationCap, ArrowRight, TrendingUp, Heart } from 'lucide-react'
+import { Users, Briefcase, CalendarDays, GraduationCap, ArrowRight } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user } = useSelector((s) => s.auth)
@@ -26,108 +26,113 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Hero greeting */}
-      <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl p-7 text-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute right-10 bottom-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2" />
+    <div className="space-y-6 animate-fade-in text-slate-200">
+
+      {/* HERO */}
+      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-indigo-600/20 border border-white/10 backdrop-blur-xl overflow-hidden shadow-xl">
+
+        {/* glow blobs */}
+        <div className="absolute w-72 h-72 bg-purple-500/20 blur-3xl rounded-full -top-20 -right-20" />
+        <div className="absolute w-72 h-72 bg-blue-500/20 blur-3xl rounded-full bottom-0 left-0" />
+
         <div className="relative z-10">
-          <p className="text-brand-200 text-sm font-medium mb-1">{greeting()},</p>
-          <h1 className="font-display text-3xl font-bold mb-2">{user?.name} 👋</h1>
-          <p className="text-brand-200 text-sm">
+          <p className="text-sm text-slate-400">{greeting()},</p>
+          <h1 className="text-3xl font-bold mt-1">{user?.name} 👋</h1>
+
+          <p className="text-sm text-slate-400 mt-1">
             {user?.role === 'alumni' && `Alumni · ${user?.dept || ''} · Batch ${user?.batch || ''}`}
             {user?.role === 'student' && `Student · ${user?.dept || ''} · Batch ${user?.batch || ''}`}
             {user?.role === 'admin' && 'Platform Administrator'}
           </p>
+
           <div className="flex gap-3 mt-5 flex-wrap">
-            <Link to="/alumni" className="inline-flex items-center gap-2 px-4 py-2 bg-white text-brand-700 rounded-xl text-sm font-semibold hover:bg-brand-50 transition-colors">
-              <Users size={14} /> Browse Alumni
+            <Link to="/alumni" className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold shadow-lg hover:scale-105 transition">
+              Browse Alumni
             </Link>
-            <Link to="/feed" className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl text-sm font-medium hover:bg-white/20 transition-colors">
+
+            <Link to="/feed" className="px-4 py-2 rounded-xl border border-white/20 text-sm hover:bg-white/10 transition">
               View Feed
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Admin stats */}
+      {/* ADMIN STATS */}
       {user?.role === 'admin' && stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'Total Users', value: stats.totalUsers, icon: Users, color: 'brand' },
-            { label: 'Alumni', value: stats.totalAlumni, icon: GraduationCap, color: 'violet' },
-            { label: 'Jobs Posted', value: stats.totalJobs, icon: Briefcase, color: 'orange' },
-            { label: 'Donations (₹)', value: `₹${(stats.totalDonationsAmount || 0).toLocaleString()}`, icon: Heart, color: 'pink' },
-          ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="card flex items-center gap-4">
-              <div className={`w-11 h-11 rounded-xl bg-${color === 'brand' ? 'brand' : color}-100 flex items-center justify-center flex-shrink-0`}>
-                <Icon size={20} className={`text-${color === 'brand' ? 'brand' : color}-600`} />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-800">{value}</p>
-                <p className="text-xs text-slate-500">{label}</p>
+            { label: 'Total Users', value: stats.totalUsers, icon: Users },
+            { label: 'Alumni', value: stats.totalAlumni, icon: GraduationCap },
+            { label: 'Jobs Posted', value: stats.totalJobs, icon: Briefcase },
+          ].map(({ label, value, icon: Icon }) => (
+            <div key={label} className="p-5 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition group">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500/30 to-blue-500/30 group-hover:scale-110 transition">
+                  <Icon size={20} />
+                </div>
+                <div>
+                  <p className="text-xl font-bold">{value}</p>
+                  <p className="text-xs text-slate-400">{label}</p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
+      {/* GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Jobs */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-lg font-bold text-slate-800">Latest Opportunities</h2>
-            <Link to="/jobs" className="text-sm text-brand-600 font-medium flex items-center gap-1 hover:text-brand-700">
+
+        {/* JOBS */}
+        <div className="p-5 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+          <div className="flex justify-between mb-5">
+            <h2 className="font-bold">Latest Opportunities</h2>
+            <Link to="/jobs" className="text-sm flex items-center gap-1 text-purple-400 hover:text-purple-300">
               View all <ArrowRight size={14} />
             </Link>
           </div>
+
           {recentJobs.length === 0 ? (
-            <p className="text-slate-400 text-sm text-center py-6">No jobs posted yet.</p>
+            <p className="text-sm text-slate-400 text-center py-6">No jobs posted.</p>
           ) : (
             <div className="space-y-3">
               {recentJobs.map((job) => (
-                <div key={job._id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center flex-shrink-0">
-                    <Briefcase size={16} className="text-brand-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold text-slate-800 text-sm truncate">{job.title}</p>
-                    <p className="text-xs text-slate-500">{job.company} · {job.location}</p>
-                    <span className={`badge mt-1 ${job.type === 'internship' ? 'bg-orange-100 text-orange-700' : 'bg-brand-100 text-brand-700'}`}>
-                      {job.type}
-                    </span>
-                  </div>
+                <div key={job._id} className="p-3 rounded-xl hover:bg-white/10 transition cursor-pointer">
+                  <p className="font-semibold text-sm">{job.title}</p>
+                  <p className="text-xs text-slate-400">{job.company} · {job.location}</p>
+
+                  <span className={`inline-block mt-2 px-2 py-1 text-xs rounded-lg 
+                    ${job.type === 'internship'
+                      ? 'bg-orange-500/20 text-orange-400'
+                      : 'bg-purple-500/20 text-purple-400'}`}>
+                    {job.type}
+                  </span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Upcoming Events */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-lg font-bold text-slate-800">Upcoming Events</h2>
-            <Link to="/events" className="text-sm text-brand-600 font-medium flex items-center gap-1 hover:text-brand-700">
+        {/* EVENTS */}
+        <div className="p-5 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+          <div className="flex justify-between mb-5">
+            <h2 className="font-bold">Upcoming Events</h2>
+            <Link to="/events" className="text-sm flex items-center gap-1 text-purple-400 hover:text-purple-300">
               View all <ArrowRight size={14} />
             </Link>
           </div>
+
           {upcomingEvents.length === 0 ? (
-            <p className="text-slate-400 text-sm text-center py-6">No events scheduled.</p>
+            <p className="text-sm text-slate-400 text-center py-6">No events scheduled.</p>
           ) : (
             <div className="space-y-3">
               {upcomingEvents.map((event) => (
-                <div key={event._id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0 text-center">
-                    <div>
-                      <p className="text-xs font-bold text-green-700 leading-none">{new Date(event.date).toLocaleString('default', { month: 'short' }).toUpperCase()}</p>
-                      <p className="text-sm font-bold text-green-700">{new Date(event.date).getDate()}</p>
-                    </div>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold text-slate-800 text-sm truncate">{event.title}</p>
-                    <p className="text-xs text-slate-500 truncate">{event.venue}</p>
-                    <p className="text-xs text-slate-400">{event.registrations?.length || 0} registered</p>
-                  </div>
+                <div key={event._id} className="p-3 rounded-xl hover:bg-white/10 transition">
+                  <p className="font-semibold text-sm">{event.title}</p>
+                  <p className="text-xs text-slate-400">{event.venue}</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {new Date(event.date).toDateString()}
+                  </p>
                 </div>
               ))}
             </div>
@@ -135,19 +140,23 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick links */}
-      <div className="card">
-        <h2 className="font-display text-lg font-bold text-slate-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* QUICK ACTIONS */}
+      <div className="p-5 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+        <h2 className="font-bold mb-4">Quick Actions</h2>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {[
-            { to: '/alumni', icon: Users, label: 'Find Alumni', color: 'bg-brand-50 text-brand-600' },
-            { to: '/mentorship', icon: GraduationCap, label: 'Get a Mentor', color: 'bg-purple-50 text-purple-600' },
-            { to: '/jobs', icon: Briefcase, label: 'Browse Jobs', color: 'bg-orange-50 text-orange-600' },
-            { to: '/donations', icon: Heart, label: 'Donate', color: 'bg-pink-50 text-pink-600' },
-          ].map(({ to, icon: Icon, label, color }) => (
-            <Link key={to} to={to} className={`flex flex-col items-center gap-2 p-4 rounded-xl ${color} hover:opacity-90 transition-all`}>
+            { to: '/alumni', icon: Users, label: 'Find Alumni' },
+            { to: '/mentorship', icon: GraduationCap, label: 'Get Mentor' },
+            { to: '/jobs', icon: Briefcase, label: 'Browse Jobs' },
+          ].map(({ to, icon: Icon, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className="p-4 rounded-xl bg-gradient-to-br from-white/5 to-white/10 border border-white/10 flex flex-col items-center gap-2 hover:scale-105 transition"
+            >
               <Icon size={22} />
-              <span className="text-xs font-semibold">{label}</span>
+              <span className="text-xs">{label}</span>
             </Link>
           ))}
         </div>

@@ -4,7 +4,6 @@ const Event = require('./Event');
 const Job = require('./Job');
 const Message = require('./Message');
 const Mentorship = require('./Mentorship');
-const Donation = require('./Donation');
 
 module.exports = {
 User,
@@ -13,5 +12,5 @@ Event,
 Job,
 Message,
 Mentorship,
-Donation
+
 };

@@ -15,7 +15,6 @@ const eventRoutes = require('./routes/eventRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const mentorshipRoutes = require('./routes/mentorshipRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const donationRoutes = require('./routes/donationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
 const Message = require('./models/Message');
@@ -43,7 +42,6 @@ app.use('/api/events', eventRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/donations', donationRoutes);
 app.use('/api/admin', adminRoutes);
 
 // SOCKET.IO
