@@ -1,3 +1,4 @@
+// mentorshipRoutes.js
 const express = require('express');
 const router = express.Router();
 
@@ -63,36 +64,40 @@ router.get('/', protect, async (req, res) => {
 });
 
 // Admin approves/rejects
-router.put('/:id/approve', protect, requireRole('admin'), async (req, res) => {
+router.put('/:id/approve', protect, async (req, res) => {
   try {
-    const mentorship = await Mentorship.findById(req.params.id)
-      .populate('student', 'name email')
-      .populate('mentor', 'name email');
+    const mentorship = await Mentorship.findById(req.params.id);
 
     if (!mentorship) {
       return res.status(404).json({ message: 'Not found' });
     }
 
+    // 🔥 DEBUG LOGS
+    console.log("REQ USER ID:", req.user._id);
+    console.log("REQ USER ROLE:", req.user.role);
+    console.log("MENTOR ID:", mentorship.mentor);
+
+    const isMentor = mentorship.mentor.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    console.log("isMentor:", isMentor);
+    console.log("isAdmin:", isAdmin);
+
+    if (!isAdmin && !isMentor) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
     mentorship.status = req.body.status || 'active';
     await mentorship.save();
 
-    await sendEmail({
-      to: mentorship.student.email,
-      subject: `Mentorship ${mentorship.status}`,
-      html: `<p>Your request with ${mentorship.mentor.name} is ${mentorship.status}.</p>`
-    });
-
-    await sendEmail({
-      to: mentorship.mentor.email,
-      subject: `Mentorship Assignment`,
-      html: `<p>Request from ${mentorship.student.name} is ${mentorship.status}.</p>`
-    });
+    await mentorship.populate('student', 'name email');
+    await mentorship.populate('mentor', 'name email');
 
     res.json(mentorship);
 
   } catch (err) {
+    console.error("APPROVE ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });
-
 module.exports = router;
